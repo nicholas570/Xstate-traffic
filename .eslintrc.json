@@ -20,6 +20,21 @@
     "sourceType": "module"
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
-  "rules": {},
+  "rules": {
+    "import/prefer-default-export": 0,
+    "arrow-body-style": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/no-unescaped-entities": 0,
+    "comma-dangle": ["error", "never"],
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-unused-vars": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "no-nested-ternary": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "no-return-assign": 0,
+    "no-useless-escape": 0,
+    "prefer-promise-reject-errors": 0
+  },
   "ignorePatterns": [".eslintrc.json"]
 }
