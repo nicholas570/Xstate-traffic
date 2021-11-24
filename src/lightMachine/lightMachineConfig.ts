@@ -10,19 +10,34 @@ export const lightMachineConfig: MachineConfig<LightContext, LightSchema, LightE
   },
   states: {
     [LightStates.Green]: {
+      entry: 'clearResult',
       on: {
-        [LightEvent.TIMER]: { target: LightStates.Green }
+        [LightEvent.TIMER]: { target: LightStates.Orange, actions: 'incrementTransitionsCount' }
       }
     },
     [LightStates.Orange]: {
       on: {
-        [LightEvent.TIMER]: { target: LightStates.Red }
+        [LightEvent.TIMER]: { target: LightStates.Red, actions: 'incrementTransitionsCount' }
       }
     },
-    red: {
+    [LightStates.Red]: {
+      invoke: {
+        id: 'dumbServiceId',
+        src: 'dumbService',
+        onDone: {
+          cond: 'isSuccess',
+          actions: 'assignResult'
+        },
+        onError: {
+          target: LightStates.Idle
+        }
+      },
       on: {
-        [LightEvent.TIMER]: { target: LightStates.Green }
+        [LightEvent.TIMER]: { target: LightStates.Green, actions: 'incrementTransitionsCount' }
       }
+    },
+    [LightStates.Idle]: {
+      type: 'final'
     }
   }
 };

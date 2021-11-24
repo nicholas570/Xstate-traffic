@@ -4,13 +4,10 @@ import { LightStates } from '../lightDefinition/lightSchema';
 import { lightMachine } from '../lightMachine';
 
 describe('lightMachine transitions', () => {
-  console.log('test');
-
   it('should go to green on initial state', (done) => {
     const lightService = interpret(lightMachine).onTransition((state) => {
-      console.log(state);
-
       if (state.matches(LightStates.Green)) {
+        expect(state.context.transitionsCount).toEqual(0);
         done();
       }
     });
@@ -24,6 +21,7 @@ describe('lightMachine transitions', () => {
         lightService.send({ type: LightEvent.TIMER });
       }
       if (state.matches(LightStates.Orange)) {
+        expect(state.context.transitionsCount).toEqual(1);
         done();
       }
     });
@@ -32,7 +30,16 @@ describe('lightMachine transitions', () => {
   });
 
   it('should go to red from orange', (done) => {
-    const lightService = interpret(lightMachine).onTransition((state) => {
+    let hasAssignedResult = false;
+    const lightService = interpret(
+      lightMachine.withConfig({
+        actions: {
+          assignResult: () => {
+            hasAssignedResult = true;
+          }
+        }
+      })
+    ).onTransition((state) => {
       if (state.matches(LightStates.Green)) {
         lightService.send({ type: LightEvent.TIMER });
       }
@@ -40,6 +47,8 @@ describe('lightMachine transitions', () => {
         lightService.send({ type: LightEvent.TIMER });
       }
       if (state.matches(LightStates.Red)) {
+        expect(state.context.transitionsCount).toEqual(2);
+        expect(hasAssignedResult).toBeTruthy();
         done();
       }
     });
